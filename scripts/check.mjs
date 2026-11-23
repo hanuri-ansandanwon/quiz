@@ -46,7 +46,13 @@ if (vocab) {
   if (months.length > 2) errors.push(`data/vocab.js: 어휘 퀴즈는 최근 2개 월호만 올려요. 가장 오래된 월호(${months.slice(0, months.length - 2).join(", ")})를 지워 주세요.`);
   console.log(`어휘 퀴즈: ${months.length}개 월호, 낱말 ${n}개`);
 }
+// data/hanja.enc.js: 중학 한자어·사자성어 (비밀번호로 잠긴 낱말)
 if (!existsSync("data/hanja.enc.js")) errors.push("data/hanja.enc.js 가 없어요.");
+else {
+  const t = readFileSync("data/hanja.enc.js", "utf8");
+  if (!/window\.HANJA_LOCK\s*=\s*\{\s*"salt":\s*"[^"]+",\s*"iv":\s*"[^"]+",\s*"it":\s*\d+,\s*"data":\s*"[A-Za-z0-9+/=]{100,}"\s*\}/.test(t)) errors.push("data/hanja.enc.js: 잠긴 낱말 자료 모양이 맞지 않아요.");
+}
+
 
 if (errors.length) { console.error("점검 실패:\n- " + errors.join("\n- ")); process.exit(1); }
 console.log("점검 통과");
